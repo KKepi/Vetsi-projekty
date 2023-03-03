@@ -1,0 +1,177 @@
+import random
+
+
+class Figurka:
+    
+    def __init__(self, pozice, barva, start = False):
+        
+        self.pozice = pozice
+        self.barva = barva
+        self.start = start
+        
+    def vratit_na_start(self):
+        self.pozice = 0
+        self.start = False
+        
+    def figurka_ve_hre(self):
+        self.start = False
+        
+    def posunout_figurku(self, i):
+        self.pozice += i
+        
+def hra():
+    
+    # uvitani
+    
+    print("VITEJTE VE HRE CLOVECE NEZLOB SE!")
+    
+    # volba poctu hracu
+    
+    while True:
+        pocet_hracu = input("\nZADEJTE POCET HRACU: ")
+        
+        if pocet_hracu.isdigit() == True:
+            
+            pocet_hracu = int(pocet_hracu)
+            
+            if pocet_hracu >= 0 and pocet_hracu < 5:
+                break
+        else:
+            print("?")
+            
+    # volba poctu AI
+    
+    while True:
+        pocet_ai = input("\nZADEJTE POCET AI: ")
+        
+        if pocet_ai.isdigit() == True:
+            
+            pocet_ai = int(pocet_ai)
+            
+            # pokud je ai vice nez je povoleno
+            if pocet_ai + pocet_hracu > 4:
+                print("POCET AI JE MOC VELKY MAXIMALNI KAPACITA HRACU A AI JE 4")
+                print(f"HRACU: {pocet_hracu}")
+                print(f"AI: {pocet_ai}")
+            # spravne
+            else:
+                break
+        
+        else:
+            print("?")
+    
+    # vytvoreni objektu
+    
+    barvy = ["modra", "cervena", "zelena", "zluta"]
+    hraci_objekt = []
+    ai_objekt = []
+    
+    for i in range(1, pocet_hracu+1):
+        hrac = []
+        barva = random.choice(barvy)
+        barvy.remove(barva)
+        
+        for i in range(1,5):
+            i = Figurka(0, barva, False)
+            hrac.append(i)
+            
+        hraci_objekt.append(hrac)
+            
+    for i in range(1, pocet_ai+1):
+        ai = []
+        barva = random.choice(barvy)
+        barvy.remove(barva)
+        
+        for i in range(1,5):
+            i = Figurka(0, barva, False)
+            ai.append(i)
+            
+        ai_objekt.append(ai)
+        
+    # [] kolikaty hrac [] kolikata figurka
+    print(hraci_objekt[0][0].barva)
+    
+    # hra bez ai
+    
+    if pocet_ai == 0:
+        print("VITEJTE VE HRE")
+        print(f"POCET HRACU: {pocet_hracu}\n")
+        
+        while True:
+            
+            # vyhodnoceni
+            #
+            for hrac in hraci_objekt:
+                figurky_v_domecku = 0
+                for figurka in hrac:
+                    if figurka.pozice == 40:
+                        figurky_v_domecku += 1
+                        
+                        vyherce = figurka
+                
+                if figurky_v_domecku == 4:
+                    
+                    return (print(f"Hrac barvy: {vyherce.barva} vyhral!"))
+                    
+            #
+            
+            print("STATISTIKY\n")
+            
+            # statistiky urcitych hracu
+            
+            i = 1
+            for hrac in hraci_objekt:
+                for figurka in hrac:
+                    print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
+                i += 1
+            
+            # hra
+            
+            for hrac in hraci_objekt:
+                
+                stisknuti = input("Pro hozeni kostky stisknete enter: ")
+                hod_kostkou = random.randint(1,6)
+                print(hod_kostkou)
+                
+                if hod_kostkou == 6:
+                    for figurka in hrac:
+                        if figurka.start == False:
+                            figurka.start = True
+                            print(f"Hrac barvy: {figurka.barva} se dostal do pole!")
+                            break
+                        else:
+                            figurka.posunout_figurku(hod_kostkou)
+                
+                else:
+                    moznosti = []
+                    for figurka in hrac:
+                        if figurka.start == True:
+                            moznosti.append(hrac.index(figurka))
+                    
+                    if len(moznosti) > 0:
+                        print(f"MUZETE POSUNOUT NASLEDUJICI FIGURKY: {moznosti}")
+                        
+                        while True:
+                            volba = input("figurka cislo: ")
+                            
+                            if volba.isdigit() == True:
+                                volba = int(volba)
+                                
+                                if volba in moznosti:
+                                    break
+                                else:
+                                    print("tato figurka se nenachazi v moznostech")
+                            else:
+                                print("?")
+                        
+                        hrac[volba].posunout_figurku(hod_kostkou)
+                        
+#
+
+def main():
+    
+    hra()
+    
+if __name__ == "__main__":
+    main()
+    
