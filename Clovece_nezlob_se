@@ -14,7 +14,7 @@ class Figurka:
         self.start = False
         
     def figurka_ve_hre(self):
-        self.start = False
+        self.start = True
         
     def posunout_figurku(self, i):
         self.pozice += i
@@ -115,14 +115,15 @@ def hra():
                     
             #
             
-            print("STATISTIKY\n")
+            print("STATISTIKY")
             
             # statistiky urcitych hracu
             
             i = 1
             for hrac in hraci_objekt:
                 for figurka in hrac:
-                    print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
+                    if figurka.start == True:
+                        print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
                 i += 1
             
             # hra
@@ -131,13 +132,13 @@ def hra():
                 
                 stisknuti = input("Pro hozeni kostky stisknete enter: ")
                 hod_kostkou = random.randint(1,6)
-                print(hod_kostkou)
+                print(f"{hrac[0].barva} hodil {hod_kostkou}")
                 
                 if hod_kostkou == 6:
                     for figurka in hrac:
                         if figurka.start == False:
-                            figurka.start = True
-                            print(f"Hrac barvy: {figurka.barva} se dostal do pole!")
+                            figurka.figurka_ve_hre()
+                            print(f"Hrac barvy: {figurka.barva} se dostal do pole!\n")
                             break
                         else:
                             figurka.posunout_figurku(hod_kostkou)
@@ -158,13 +159,29 @@ def hra():
                                 volba = int(volba)
                                 
                                 if volba in moznosti:
+                                    hrac[volba].posunout_figurku(hod_kostkou)
+                                    
+                                    # stejne policko
+                                    for uzivatel in hraci_objekt:
+                                        for fig in uzivatel:
+                                            if fig.start == True:
+                                                if fig.pozice == hrac[volba].pozice and fig.barva != hrac[volba].barva:
+                                                    fig.vratit_na_start()
+                                                    print(f"hrac {hrac[volba].barva} poslal hrace {fig.barva} na pozici 0!")
+                                                    break
                                     break
+                                
                                 else:
                                     print("tato figurka se nenachazi v moznostech")
+                                
                             else:
                                 print("?")
                         
                         hrac[volba].posunout_figurku(hod_kostkou)
+                                        
+                                
+            
+            
                         
 #
 
@@ -174,4 +191,3 @@ def main():
     
 if __name__ == "__main__":
     main()
-    
