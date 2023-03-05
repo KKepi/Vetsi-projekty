@@ -115,7 +115,7 @@ def hra():
                     
             #
             
-            print("STATISTIKY")
+            #print("STATISTIKY")
             
             # statistiky urcitych hracu
             
@@ -123,6 +123,7 @@ def hra():
             for hrac in hraci_objekt:
                 for figurka in hrac:
                     if figurka.start == True:
+                        print("STATISTIKY")
                         print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
                 i += 1
             
@@ -134,14 +135,94 @@ def hra():
                 hod_kostkou = random.randint(1,6)
                 print(f"{hrac[0].barva} hodil {hod_kostkou}")
                 
+                # kontrola kolik figurek je v poli, pokud zadna   |
+                #                                                 V
+                aktualni_figurky_ve_hre = 0
+                
+                for figurka in hrac:
+                    if figurka.start == True:
+                        aktualni_figurky_ve_hre += 1
+                
+                    
                 if hod_kostkou == 6:
-                    for figurka in hrac:
-                        if figurka.start == False:
-                            figurka.figurka_ve_hre()
-                            print(f"Hrac barvy: {figurka.barva} se dostal do pole!\n")
-                            break
+                    
+                    if aktualni_figurky_ve_hre == 0:
+                        for figurka in hrac:
+                            if figurka.start == False:
+                                figurka.figurka_ve_hre()
+                                print(f"Hrac barvy: {figurka.barva} se dostal do pole!\n")
+                                break
+                    
+                    else:
+                        figurky_mozne_dat_do_pole = []
+                        for figurka in hrac:
+                            if figurka.start == False:
+                                figurky_mozne_dat_do_pole.append(hrac.index(figurka))
+                        
+                        figurky_mozne_posunout_o_6 = []
+                        for figurka in hrac:
+                            if figurka.start == True:
+                                figurky_mozne_posunout_o_6.append(hrac.index(figurka))
+                                
+                        # pokud je mozne pridat figurku do pole
+                        
+                        if len(figurky_mozne_dat_do_pole) > 0:
+                            while True:
+                                print(f"FIGURKY CISLO: {figurky_mozne_dat_do_pole} JE MOZNE PRIDAT DO POLE")
+                                print(f"FIGURKY CISLO: {figurky_mozne_posunout_o_6} JE MOZNE POSUNOUT O 6 POLICEK")
+                                
+                                volba = input(f"pro dalsi krok volim figurku cislo: ")
+                                
+                                if volba.isdigit() == True:
+                                    volba = int(volba)
+                                    
+                                    if volba in figurky_mozne_dat_do_pole:
+                                        hrac[volba].figurka_ve_hre()
+                                        break
+                                    
+                                    if volba in figurky_mozne_posunout_o_6:
+                                        hrac[volba].posunout_figurku(6)
+                                        
+                                        # stejne policko
+                                        for uzivatel in hraci_objekt:
+                                            for fig in uzivatel:
+                                                if fig.start == True:
+                                                    if fig.pozice == hrac[volba].pozice and fig.barva != hrac[volba].barva:
+                                                        fig.vratit_na_start()
+                                                        print(f"hrac {hrac[volba].barva} poslal hrace {fig.barva} na pozici 0!")
+                                                        break
+                                        break
+                                    
+                                    else:
+                                        print("tato figurka neni v moznostech")
+                                        
+                                        
+                                
+                                else:
+                                    print("?")
+                        
+                        # je mozne jen posunout figurky o 6 policek
+                            
+                        
                         else:
-                            figurka.posunout_figurku(hod_kostkou)
+                            while True:
+                                print(f"MUZETE POSUNOUT NASLEDUJICI FIGURKY: {figurky_mozne_posunout_o_6}")
+                                volba = input("figurka cislo: ")
+                                
+                                if volba.isdigit() == True:
+                                    volba = int(volba)
+                                    
+                                    if volba in figurky_mozne_posunout_o_6:
+                                        hrac[volba].posunout_figurku(6)
+                                        break
+                                    
+                                    else:
+                                        print("tato figurka neni v moznostech")
+                                
+                                else:
+                                    print("?")
+                                        
+                # hod kostkou je jiny nez 6.... figurky lze jen posouvat
                 
                 else:
                     moznosti = []
@@ -177,7 +258,7 @@ def hra():
                             else:
                                 print("?")
                         
-                        hrac[volba].posunout_figurku(hod_kostkou)
+                        #hrac[volba].posunout_figurku(hod_kostkou)
                                         
                                 
             
