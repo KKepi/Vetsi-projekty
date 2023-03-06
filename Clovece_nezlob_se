@@ -3,11 +3,12 @@ import random
 
 class Figurka:
     
-    def __init__(self, pozice, barva, start = False):
+    def __init__(self, pozice, barva, souradnice_pole, start = False):
         
         self.pozice = pozice
         self.barva = barva
         self.start = start
+        self.souradnice_pole = souradnice_pole
         
     def vratit_na_start(self):
         self.pozice = 0
@@ -71,8 +72,19 @@ def hra():
         barva = random.choice(barvy)
         barvy.remove(barva)
         
+        # kazda barva ma startovni pozici na jinych souradnicich
+        
+        if barva == "modra":
+            souradnice_pole = 20
+        elif barva == "cervena":
+            souradnice_pole = 0
+        elif barva == "zelena":
+            souradnice_pole = 10
+        elif barva == "zluta":
+            souradnice_pole = 30
+        
         for i in range(1,5):
-            i = Figurka(0, barva, False)
+            i = Figurka(0, barva, souradnice_pole, False)
             hrac.append(i)
             
         hraci_objekt.append(hrac)
@@ -104,7 +116,7 @@ def hra():
             for hrac in hraci_objekt:
                 figurky_v_domecku = 0
                 for figurka in hrac:
-                    if figurka.pozice == 40:
+                    if figurka.pozice - figurka.souradnice_pole == 39:
                         figurky_v_domecku += 1
                         
                         vyherce = figurka
@@ -123,7 +135,7 @@ def hra():
             for hrac in hraci_objekt:
                 for figurka in hrac:
                     if figurka.start == True:
-                        print("STATISTIKY")
+                        print("\nSTATISTIKY")
                         print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
                 i += 1
             
@@ -150,6 +162,7 @@ def hra():
                         for figurka in hrac:
                             if figurka.start == False:
                                 figurka.figurka_ve_hre()
+                                figurka.posunout_figurku(figurka.souradnice_pole)
                                 print(f"Hrac barvy: {figurka.barva} se dostal do pole!\n")
                                 break
                     
@@ -178,6 +191,7 @@ def hra():
                                     
                                     if volba in figurky_mozne_dat_do_pole:
                                         hrac[volba].figurka_ve_hre()
+                                        hrac[volba].posunout_figurku(hrac[volba].souradnice_pole)
                                         break
                                     
                                     if volba in figurky_mozne_posunout_o_6:
