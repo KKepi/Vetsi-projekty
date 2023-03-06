@@ -43,7 +43,7 @@ def hra():
     # volba poctu AI
     
     while True:
-        pocet_ai = input("\nZADEJTE POCET AI: ")
+        pocet_ai = input("ZADEJTE POCET AI: ")
         
         if pocet_ai.isdigit() == True:
             
@@ -101,7 +101,7 @@ def hra():
         ai_objekt.append(ai)
         
     # [] kolikaty hrac [] kolikata figurka
-    print(hraci_objekt[0][0].barva)
+    # print(hraci_objekt[0][0].barva)
     
     # hra bez ai
     
@@ -116,7 +116,7 @@ def hra():
             for hrac in hraci_objekt:
                 figurky_v_domecku = 0
                 for figurka in hrac:
-                    if figurka.pozice - figurka.souradnice_pole == 39:
+                    if figurka.pozice - figurka.souradnice_pole > 39:
                         figurky_v_domecku += 1
                         
                         vyherce = figurka
@@ -133,16 +133,24 @@ def hra():
             
             i = 1
             for hrac in hraci_objekt:
+                figurky_jiz_v_cili = 0
                 for figurka in hrac:
+                    # vypis figurek v poli
                     if figurka.start == True:
                         print("\nSTATISTIKY")
                         print(f"Hrac {i}\nbarva: {figurka.barva}\npozice: {figurka.pozice}\nv poli: {figurka.start}\n")
+                    # pokud je alespon jedna figurka v cili
+                    if figurka.start == True and figurka.pozice - figurka.souradnice_pole > 39:
+                        figurky_jiz_v_cili += 1
+                    if figurky_jiz_v_cili > 0:
+                        print(f"pocet figurek v cili: {figurky_jiz_v_cili}\n")
                 i += 1
             
             # hra
             
             for hrac in hraci_objekt:
                 
+                print(f"Hraje hrac: {hrac[0].barva}")
                 stisknuti = input("Pro hozeni kostky stisknete enter: ")
                 hod_kostkou = random.randint(1,6)
                 print(f"{hrac[0].barva} hodil {hod_kostkou}")
@@ -163,7 +171,7 @@ def hra():
                             if figurka.start == False:
                                 figurka.figurka_ve_hre()
                                 figurka.posunout_figurku(figurka.souradnice_pole)
-                                print(f"Hrac barvy: {figurka.barva} se dostal do pole!\n")
+                                print(f"\nHrac barvy: {figurka.barva} se dostal do pole!\n")
                                 break
                     
                     else:
@@ -175,16 +183,19 @@ def hra():
                         figurky_mozne_posunout_o_6 = []
                         for figurka in hrac:
                             if figurka.start == True:
-                                figurky_mozne_posunout_o_6.append(hrac.index(figurka))
+                                # pokud jiz je v cili
+                                if figurka.pozice - figurka.souradnice_pole < 39:
+                                    figurky_mozne_posunout_o_6.append(hrac.index(figurka))
                                 
                         # pokud je mozne pridat figurku do pole
                         
                         if len(figurky_mozne_dat_do_pole) > 0:
                             while True:
-                                print(f"FIGURKY CISLO: {figurky_mozne_dat_do_pole} JE MOZNE PRIDAT DO POLE")
+                                print(f"\nFIGURKY CISLO: {figurky_mozne_dat_do_pole} JE MOZNE PRIDAT DO POLE")
                                 print(f"FIGURKY CISLO: {figurky_mozne_posunout_o_6} JE MOZNE POSUNOUT O 6 POLICEK")
                                 
                                 volba = input(f"pro dalsi krok volim figurku cislo: ")
+                                print(" ")
                                 
                                 if volba.isdigit() == True:
                                     volba = int(volba)
@@ -222,6 +233,7 @@ def hra():
                             while True:
                                 print(f"MUZETE POSUNOUT NASLEDUJICI FIGURKY: {figurky_mozne_posunout_o_6}")
                                 volba = input("figurka cislo: ")
+                                print(" ")
                                 
                                 if volba.isdigit() == True:
                                     volba = int(volba)
@@ -241,7 +253,7 @@ def hra():
                 else:
                     moznosti = []
                     for figurka in hrac:
-                        if figurka.start == True:
+                        if figurka.start == True and figurka.pozice - figurka.souradnice_pole < 39:
                             moznosti.append(hrac.index(figurka))
                     
                     if len(moznosti) > 0:
@@ -249,6 +261,7 @@ def hra():
                         
                         while True:
                             volba = input("figurka cislo: ")
+                            print(" ")
                             
                             if volba.isdigit() == True:
                                 volba = int(volba)
@@ -273,6 +286,7 @@ def hra():
                                 print("?")
                         
                         #hrac[volba].posunout_figurku(hod_kostkou)
+                        #pokud je figurka v cili smazat ji z vypisu statistik
                                         
                                 
             
